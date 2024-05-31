@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription with Panda Wallet</title>
+</head>
+<body>
+    <h1>Inscription with Panda Wallet</h1>
+
+    <!-- Button to log in with Panda Wallet -->
+    <button id="login-btn" onclick="loginWithPandaWallet()">Log in with Panda Wallet</button>
+
+    <!-- Wallet information section, hidden by default -->
+    <div id="wallet-info" style="display: none;">
+        <p>Logged in with BSV Address: <span id="bsv-address"></span></p>
+        <form id="inscription-form" enctype="multipart/form-data">
+            <label for="data">Image to Inscribe:</label><br>
+            <input type="file" id="data" name="data" accept="image/*" required><br><br>
+
+            <label for="mimeType">MIME Type:</label><br>
+            <input type="text" id="mimeType" name="mimeType" value="image/png" required><br><br>
+
+            <label for="appName">App Name:</label><br>
+            <input type="text" id="appName" name="appName" required><br><br>
+
+            <label for="dataName">Data Name:</label><br>
+            <input type="text" id="dataName" name="dataName" required><br><br>
+
+            <label for="destinationAddress">Destination Address:</label><br>
+            <input type="text" id="destinationAddress" name="destinationAddress" required><br><br>
+
+            <button type="button" onclick="submitForm()">Inscribe</button>
+        </form>
+    </div>
+
+    <p id="wallet-status"></p>
+
+    <script>
+        // Global variables to store wallet and addresses
+        let wallet;
+        let bsvAddress, ordAddress, identityAddress, utxo;
+
+        // Function to initialize the Panda Wallet provider
+        const initProvider = () => {
+            if ('panda' in window) {
+                const provider = window.panda;
+                if (provider?.isReady) {
+                    return provider;
+                }
+            }
+            return null;
+        };
+
+        // Function to handle login with Panda Wallet
+        const loginWithPandaWallet = async () => {
+            console.log("Attempting to log in with Panda Wallet...");
+
+            wallet = initProvider();
+            if (!wallet) {
+                console.error('Panda Wallet is not ready');
+                document.getElementById('wallet-status').textContent = 'Panda Wallet is not ready. Please install and set up Panda Wallet.';
+                window.open('https://chrome.google.com/webstore/detail/panda-wallet/mlbnicldl1pdjpfenfikcidjbokkgomo');
+                return;
+            }
+
+            try {
+                // Connect to the wallet and get the accounts
+                const accounts = await wallet.connect();
+                console.log("Accounts:", accounts);
+                if (accounts.length === 0) {
+                    console.log("No accounts found, ensure Panda Wallet is unlocked");
+                    alert('No accounts found. Please ensure your Panda Wallet is unlocked.');
+                    return;
+                }
+
+                // Fetch addresses from the wallet
+                const addresses = await wallet.getAddresses();
+                console.log("Addresses:", addresses);
+                bsvAddress = addresses.bsvAddress;
+                ordAddress = addresses.ordAddress;
+                identityAddress = addresses.identityAddress;
+
+                // Fetch UTXOs from the wallet
+                const utxos = await wallet.getPaymentUtxos();
+                console.log("UTXOs:", utxos);
+                if (utxos.length === 0) {
+                    console.log("No UTXOs found for the address");
+                    alert('No UTXOs found for the address.');
+                    return;
+                }
+
+                // Use only the first UTXO
+                utxo = utxos[0];
+                console.log("Selected UTXO:", utxo);
+
+                // Update UI with wallet information
+                document.getElementById('bsv-address').textContent = bsvAddress;
+                document.getElementById('wallet-info').style.display = 'block';
+                document.getElementById('login-btn').style.display = 'none';
+
+            } catch (error) {
+                console.error('Error connecting to wallet:', error);
+                document.getElementById('wallet-status').textContent = 'Failed to connect to wallet';
+            }
+        };
+
+        // Function to handle form submission and inscription
+        const submitForm = async () => {
+            console.log("Submitting form...");
+
+            const form = document.getElementById('inscription-form');
+            const formData = new FormData(form);
+            const file = formData.get('data');
+
+            // Read the file as base64
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                const base64Data = e.target.result.split(',')[1];
+                console.log("Base64 Data:", base64Data);
+
+                const inscriptionData = {
+                    base64Data: base64Data,
+                    mimeType: formData.get('mimeType'),
+                    appName: formData.get('appName'),
+                    dataName: formData.get('dataName'),
+                    destinationAddress: formData.get('destinationAddress'),
+                    walletData: {
+                        bsvAddress: bsvAddress,
+                        ordAddress: ordAddress,
+                        identityAddress: identityAddress,
+                        utxo: utxo
+                    }
+                };
+
+                try {
+                    const inscriptions = [
+                        {
+                            address: inscriptionData.destinationAddress,
+                            base64Data: inscriptionData.base64Data,
+                            mimeType: inscriptionData.mimeType,
+                            map: {
+                                app: inscriptionData.appName,
+                                type: "ord",
+                                name: inscriptionData.dataName
+                            }
+                        }
+                    ];
+
+                    console.log("Inscriptions:", inscriptions);
+
+                    // Use wallet.inscribe method to inscribe the data
+                    const { txid, rawtx } = await wallet.inscribe(inscriptions);
+                    console.log("Transaction ID:", txid);
+                    alert(`Inscription successful! Transaction ID: ${txid}`);
+                } catch (error) {
+                    console.error('Error submitting the form:', error);
+                    document.getElementById('wallet-status').textContent = 'Failed to submit the form';
+                    alert(`Inscription failed: ${error.message}`);
+                }
+            };
+
+            reader.readAsDataURL(file);
+        };
+    </script>
+</body>
+</html>
