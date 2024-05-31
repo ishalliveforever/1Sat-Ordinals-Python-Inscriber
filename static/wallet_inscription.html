@@ -3,45 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inscription with Panda Wallet</title>
+    <title>Ordinal Etcher</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f8f9fa;
+        }
+        .container {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .container h1 {
+            margin-bottom: 2rem;
+            color: #333;
+        }
+        .container p {
+            margin-bottom: 1rem;
+        }
+        .container input, .container button {
+            width: 100%;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .container button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .container button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-    <h1>Inscription with Panda Wallet</h1>
+    <div class="container">
+        <h1>Ordinal Etcher</h1>
 
-    <!-- Button to log in with Panda Wallet -->
-    <button id="login-btn" onclick="loginWithPandaWallet()">Log in with Panda Wallet</button>
+        <button id="login-btn" onclick="loginWithPandaWallet()">Log in with Panda Wallet</button>
 
-    <!-- Wallet information section, hidden by default -->
-    <div id="wallet-info" style="display: none;">
-        <p>Logged in with BSV Address: <span id="bsv-address"></span></p>
-        <form id="inscription-form" enctype="multipart/form-data">
-            <label for="data">Image to Inscribe:</label><br>
-            <input type="file" id="data" name="data" accept="image/*" required><br><br>
+        <div id="wallet-info" style="display: none;">
+            <p>Connected</p>
+            <p><span id="bsv-address"></span></p>
+            <form id="inscription-form" enctype="multipart/form-data">
+                <label for="data">Image to Inscribe:</label><br>
+                <input type="file" id="data" name="data" accept="image/*" required><br><br>
 
-            <label for="mimeType">MIME Type:</label><br>
-            <input type="text" id="mimeType" name="mimeType" value="image/png" required><br><br>
+                <label for="mimeType">MIME Type:</label><br>
+                <input type="text" id="mimeType" name="mimeType" value="image/png" required><br><br>
 
-            <label for="appName">App Name:</label><br>
-            <input type="text" id="appName" name="appName" required><br><br>
+                <label for="appName">App Name:</label><br>
+                <input type="text" id="appName" name="appName" required><br><br>
 
-            <label for="dataName">Data Name:</label><br>
-            <input type="text" id="dataName" name="dataName" required><br><br>
+                <label for="dataName">Data Name:</label><br>
+                <input type="text" id="dataName" name="dataName" required><br><br>
 
-            <label for="destinationAddress">Destination Address:</label><br>
-            <input type="text" id="destinationAddress" name="destinationAddress" required><br><br>
+                <label for="destinationAddress">Destination Address:</label><br>
+                <input type="text" id="destinationAddress" name="destinationAddress" required><br><br>
 
-            <button type="button" onclick="submitForm()">Inscribe</button>
-        </form>
+                <button type="button" onclick="submitForm()">Inscribe</button>
+            </form>
+        </div>
+
+        <p id="wallet-status"></p>
     </div>
 
-    <p id="wallet-status"></p>
-
     <script>
-        // Global variables to store wallet and addresses
         let wallet;
         let bsvAddress, ordAddress, identityAddress, utxo;
 
-        // Function to initialize the Panda Wallet provider
         const initProvider = () => {
             if ('panda' in window) {
                 const provider = window.panda;
@@ -52,7 +91,6 @@
             return null;
         };
 
-        // Function to handle login with Panda Wallet
         const loginWithPandaWallet = async () => {
             console.log("Attempting to log in with Panda Wallet...");
 
@@ -65,36 +103,27 @@
             }
 
             try {
-                // Connect to the wallet and get the accounts
                 const accounts = await wallet.connect();
-                console.log("Accounts:", accounts);
                 if (accounts.length === 0) {
                     console.log("No accounts found, ensure Panda Wallet is unlocked");
                     alert('No accounts found. Please ensure your Panda Wallet is unlocked.');
                     return;
                 }
 
-                // Fetch addresses from the wallet
                 const addresses = await wallet.getAddresses();
-                console.log("Addresses:", addresses);
                 bsvAddress = addresses.bsvAddress;
                 ordAddress = addresses.ordAddress;
                 identityAddress = addresses.identityAddress;
 
-                // Fetch UTXOs from the wallet
                 const utxos = await wallet.getPaymentUtxos();
-                console.log("UTXOs:", utxos);
                 if (utxos.length === 0) {
                     console.log("No UTXOs found for the address");
                     alert('No UTXOs found for the address.');
                     return;
                 }
 
-                // Use only the first UTXO
-                utxo = utxos[0];
-                console.log("Selected UTXO:", utxo);
+                utxo = utxos[0]; // Use only the first UTXO
 
-                // Update UI with wallet information
                 document.getElementById('bsv-address').textContent = bsvAddress;
                 document.getElementById('wallet-info').style.display = 'block';
                 document.getElementById('login-btn').style.display = 'none';
@@ -105,10 +134,7 @@
             }
         };
 
-        // Function to handle form submission and inscription
         const submitForm = async () => {
-            console.log("Submitting form...");
-
             const form = document.getElementById('inscription-form');
             const formData = new FormData(form);
             const file = formData.get('data');
@@ -117,7 +143,6 @@
             const reader = new FileReader();
             reader.onload = async (e) => {
                 const base64Data = e.target.result.split(',')[1];
-                console.log("Base64 Data:", base64Data);
 
                 const inscriptionData = {
                     base64Data: base64Data,
@@ -147,9 +172,6 @@
                         }
                     ];
 
-                    console.log("Inscriptions:", inscriptions);
-
-                    // Use wallet.inscribe method to inscribe the data
                     const { txid, rawtx } = await wallet.inscribe(inscriptions);
                     console.log("Transaction ID:", txid);
                     alert(`Inscription successful! Transaction ID: ${txid}`);
