@@ -1,9 +1,5 @@
-### README.md
-
-```markdown
-# Panda Wallet Inscription App
-
-This project is a web application that allows users to inscribe data onto the Bitcoin SV (BSV) blockchain using Panda Wallet. The application supports the inscription of images and ensures all inscriptions are valid according to 1Sat Ordinals standards.
+# 1Sat-Ordinals-Python-Inscriber
+This project is a web application that allows users to inscribe data onto the Bitcoin SV (BSV) blockchain using Yours Wallet. The application supports the inscription of images and ensures all inscriptions are valid according to 1Sat Ordinals standards.
 
 ## Features
 - Log in with Yours Wallet.
@@ -12,14 +8,14 @@ This project is a web application that allows users to inscribe data onto the Bi
 
 ## Prerequisites
 - Python 3.7+
-- Panda Wallet extension installed in your browser ([Download Panda Wallet](https://chrome.google.com/webstore/detail/panda-wallet/mlbnicldl1pdjpfenfikcidjbokkgomo))
+- Yours Wallet extension installed in your browser ([Download Yours Wallet](https://chrome.google.com/webstore/detail/panda-wallet/mlbnicldl1pdjpfenfikcidjbokkgomo))
 
 ## Setup
 
 ### Step 1: Clone the Repository
 ```sh
-git clone https://github.com/yourusername/your-repo-name.git
-cd your-repo-name
+git clone https://github.com/ishalliveforever/1Sat-Ordinals-Python-Inscriber.git
+cd 1Sat-Ordinals-Python-Inscriber
 ```
 
 ### Step 2: Create and Activate a Virtual Environment
@@ -38,7 +34,7 @@ pip install -r requirements.txt
 python app.py
 ```
 
-The application will run on `http://127.0.0.1:5000`.
+The application will run on [http://127.0.0.1:5000](http://127.0.0.1:5000).
 
 ## Project Structure
 ```
@@ -53,21 +49,21 @@ The application will run on `http://127.0.0.1:5000`.
 ## Usage
 
 ### Logging in with Panda Wallet
-1. Open your browser and navigate to `http://127.0.0.1:5000`.
-2. Click on the "Log in with Panda Wallet" button.
+1. Open your browser and navigate to [http://127.0.0.1:5000](http://127.0.0.1:5000).
+2. Click on the "Log in with Yours Wallet" button.
 3. Follow the prompts to connect your Panda Wallet.
 
 ### Inscribing an Image
 1. Once logged in, fill out the form:
-   - **Image to Inscribe**: Select the image you want to inscribe.
-   - **MIME Type**: The MIME type of the image (default is `image/png`).
-   - **App Name**: The name of your application.
-   - **Data Name**: A name for the data being inscribed.
-   - **Destination Address**: The BSV address where the inscription will be sent.
+    - **Image to Inscribe**: Select the image you want to inscribe.
+    - **MIME Type**: The MIME type of the image (default is `image/png`).
+    - **App Name**: The name of your application.
+    - **Data Name**: A name for the data being inscribed.
+    - **Destination Address**: The BSV address where the inscription will be sent.
 2. Click "Inscribe".
 3. Wait for the transaction to be processed. You will receive a notification with the transaction ID if the inscription is successful.
 
-## Validating Inscriptions
+### Validating Inscriptions
 The inscriptions created by this application follow the 1Sat Ordinals standard, ensuring they are valid and meet the necessary requirements.
 
 ## Troubleshooting
@@ -82,6 +78,12 @@ Check the console logs in your browser and the terminal running the Flask app fo
 ## Contributing
 Contributions are welcome! Please fork the repository and submit a pull request with your changes.
 
+## Donate
+BSV Address: 1AehJyGHnPXMZ2zg4wdBjaowdLTebysFus
+BCH: qrxx9gycn3rrp6pd29p84ez2cceqc93gl5zdvttrjw
+BTC Address: bc1q5dc49up9k8ne90xn4n6edxd908n8het9maxwhu
+Doge: DJ1pkmDwdLS94ZSEJdVJoq2MHprDfjaUpZ
+Sol: 9HmpAhDoicGehmGhbbN5kmhsd5uZGm2DEDt68cGiUseJ
+
 ## License
 This project is licensed under the MIT License.
-```
