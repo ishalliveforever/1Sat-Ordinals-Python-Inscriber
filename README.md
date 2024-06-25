@@ -79,11 +79,11 @@ Check the console logs in your browser and the terminal running the Flask app fo
 Contributions are welcome! Please fork the repository and submit a pull request with your changes.
 
 ## Donate
-BSV Address: 1AehJyGHnPXMZ2zg4wdBjaowdLTebysFus
-BCH: qrxx9gycn3rrp6pd29p84ez2cceqc93gl5zdvttrjw
-BTC Address: bc1q5dc49up9k8ne90xn4n6edxd908n8het9maxwhu
-Doge: DJ1pkmDwdLS94ZSEJdVJoq2MHprDfjaUpZ
-Sol: 9HmpAhDoicGehmGhbbN5kmhsd5uZGm2DEDt68cGiUseJ
+## BSV Address: 1AehJyGHnPXMZ2zg4wdBjaowdLTebysFus
+## BCH: qrxx9gycn3rrp6pd29p84ez2cceqc93gl5zdvttrjw.
+## BTC Address: bc1q5dc49up9k8ne90xn4n6edxd908n8het9maxwhu
+## Doge: DJ1pkmDwdLS94ZSEJdVJoq2MHprDfjaUpZ
+## Sol: 9HmpAhDoicGehmGhbbN5kmhsd5uZGm2DEDt68cGiUseJ
 
 ## License
 This project is licensed under the MIT License.
